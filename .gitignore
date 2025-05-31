@@ -1,8 +1,9 @@
 ## Ignore audio and output dir 
 
 # Audio files
-audio
+*.wav
 
 # Output directory
-output
+*.txt
+*.json
 

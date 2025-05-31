@@ -181,8 +181,8 @@ class RealtimeTranscriber:
         
     def save_transcription(self, text, filename, keywords=None, confidence_info=None):
         """Guardar transcripción con información adicional"""
-        os.makedirs("output", exist_ok=True)
-        filepath = f"output/{filename}.txt"
+        os.makedirs(f"output/{filename}", exist_ok=True)
+        filepath = f"output/{filename}/{filename}.txt"
         
         with open(filepath, "w", encoding="utf-8") as f:
             f.write(f"Fecha: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
@@ -211,7 +211,7 @@ class RealtimeTranscriber:
                 f.write("\n")
         
         # Guardar también en JSON para análisis posterior
-        json_filepath = f"output/{filename}.json"
+        json_filepath = f"output/{filename}/{filename}.json"
         data = {
             "timestamp": datetime.now().isoformat(),
             "model": self.model_size,
