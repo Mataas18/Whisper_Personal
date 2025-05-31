@@ -1,0 +1,8 @@
+## Ignore audio and output dir 
+
+# Audio files
+audio
+
+# Output directory
+output
+
