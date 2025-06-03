@@ -278,7 +278,9 @@ class RealtimeTranscriber:
             "base": {"size": "74 MB", "speed": "~16x", "quality": "⭐⭐⭐"},
             "small": {"size": "244 MB", "speed": "~6x", "quality": "⭐⭐⭐⭐"},
             "medium": {"size": "769 MB", "speed": "~2x", "quality": "⭐⭐⭐⭐⭐"},
-            "large": {"size": "1550 MB", "speed": "1x", "quality": "⭐⭐⭐⭐⭐⭐"},
+            "large-v1": {"size": "1550 MB", "speed": "1x", "quality": "⭐⭐⭐⭐⭐⭐"},
+            "large-v2": {"size": "1550 MB", "speed": "1x", "quality": "⭐⭐⭐⭐⭐⭐"},
+            "large-v3": {"size": "1550 MB", "speed": "1x", "quality": "⭐⭐⭐⭐⭐⭐"},
             "turbo": {"size": "809 MB", "speed": "~8x", "quality": "⭐⭐⭐⭐⭐"}
         }
         
@@ -507,26 +509,88 @@ class RealtimeTranscriber:
             print("\n" + "="*50)
             print("⚙️  CONFIGURACIÓN")
             print("="*50)
-            print(f"1️⃣  Calidad de audio: {self.audio_quality} ({self.RATE}Hz)")
-            print(f"2️⃣  Gestionar palabras clave ({len(self.keywords)} actuales)")
-            print("3️⃣  Volver al menú principal")
+            print(f"1️⃣  Modelo Whisper: {self.model_size}")
+            print(f"2️⃣  Calidad de audio: {self.audio_quality} ({self.RATE}Hz)")
+            print(f"3️⃣  Gestionar palabras clave ({len(self.keywords)} actuales)")
+            print("4️⃣  Volver al menú principal")
             print("-" * 50)
-            print("Elige una opción (1-3)...")
+            print("Elige una opción (1-4)...")
             
             while True:
                 if keyboard.is_pressed('1'):
                     while keyboard.is_pressed('1'): time.sleep(0.1)
-                    self.change_audio_quality()
+                    self.change_model()
                     break
                 elif keyboard.is_pressed('2'):
                     while keyboard.is_pressed('2'): time.sleep(0.1)
+                    self.change_audio_quality()
+                    break
+                elif keyboard.is_pressed('3'):
+                    while keyboard.is_pressed('3'): time.sleep(0.1)
                     self.manage_keywords()
                     break
-                elif keyboard.is_pressed('3') or keyboard.is_pressed('esc'):
-                    while keyboard.is_pressed('3') or keyboard.is_pressed('esc'): time.sleep(0.1)
+                elif keyboard.is_pressed('4') or keyboard.is_pressed('esc'):
+                    while keyboard.is_pressed('4') or keyboard.is_pressed('esc'): time.sleep(0.1)
                     return
                 time.sleep(0.1)
     
+    def change_model(self):
+        """Cambiar modelo de Whisper"""
+        models = ["tiny", "base", "small", "medium", "large-v1", "large-v2", "large-v3", "turbo"]
+        
+        print("\n" + "="*50)
+        print("🧠 SELECCIONAR MODELO WHISPER")
+        print("="*50)
+        print("Modelos disponibles (compatibles con español):")
+        
+        for i, model in enumerate(models, 1):
+            current = " ← ACTUAL" if model == self.model_size else ""
+            size_info = {
+                "tiny": "39 MB - Muy rápido",
+                "base": "74 MB - Equilibrado", 
+                "small": "244 MB - Buena calidad",
+                "medium": "769 MB - Alta calidad",
+                "large-v1": "1550 MB - Máxima calidad v1",
+                "large-v2": "1550 MB - Máxima calidad v2",
+                "large-v3": "1550 MB - Máxima calidad v3 (recomendado)",
+                "turbo": "809 MB - Rápido y buena calidad"
+            }
+            print(f"{i}️⃣  {model:10} ({size_info[model]}){current}")
+        
+        print("9️⃣  Cancelar")
+        print("-" * 50)
+        print("Elige un modelo (1-9)...")
+        
+        while True:
+            for i, model in enumerate(models, 1):
+                if keyboard.is_pressed(str(i)):
+                    while keyboard.is_pressed(str(i)): time.sleep(0.1)
+                    
+                    if model != self.model_size:
+                        old_model = self.model_size
+                        self.model_size = model
+                        
+                        # Si ya había un modelo cargado, necesitamos recargarlo
+                        if self.model is not None:
+                            print(f"🔄 Cambiando de {old_model} a {model}...")
+                            print("⚠️  Se recargará el modelo en la próxima transcripción")
+                            self.model = None  # Forzar recarga
+                        
+                        print(f"✅ Modelo cambiado a: {model}")
+                    else:
+                        print(f"ℹ️  Ya estás usando el modelo {model}")
+                    
+                    time.sleep(1.5)
+                    return
+            
+            if keyboard.is_pressed('9') or keyboard.is_pressed('esc'):
+                while keyboard.is_pressed('9') or keyboard.is_pressed('esc'): time.sleep(0.1)
+                print("❌ Cambio de modelo cancelado")
+                time.sleep(1)
+                return
+            
+            time.sleep(0.1)
+
     def change_audio_quality(self):
         """Cambiar calidad de audio"""
         qualities = ["low", "medium", "high", "ultra"]
