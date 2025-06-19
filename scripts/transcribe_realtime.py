@@ -18,6 +18,9 @@ class RealtimeTranscriber:
         self.is_recording = False
         self.audio_frames = []
         
+        # Obtener la ruta raíz del proyecto (un nivel arriba de scripts)
+        self.project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        
         # Configuración de audio (mejorada)
         self.audio_quality = "ultra"  # low, medium, high, ultra
         self.setup_audio_config()
@@ -156,8 +159,10 @@ class RealtimeTranscriber:
             
     def save_audio(self, filename):
         """Guardar audio grabado"""
-        os.makedirs("audio", exist_ok=True)
-        filepath = f"audio/{filename}"
+        # Crear carpeta audio en la raíz del proyecto
+        audio_dir = os.path.join(self.project_root, "audio")
+        os.makedirs(audio_dir, exist_ok=True)
+        filepath = os.path.join(audio_dir, filename)
         
         wf = wave.open(filepath, 'wb')
         wf.setnchannels(self.CHANNELS)
@@ -181,8 +186,10 @@ class RealtimeTranscriber:
         
     def save_transcription(self, text, filename, keywords=None, confidence_info=None):
         """Guardar transcripción con información adicional"""
-        os.makedirs(f"output/{filename}", exist_ok=True)
-        filepath = f"output/{filename}/{filename}.txt"
+        # Crear carpeta output en la raíz del proyecto
+        output_dir = os.path.join(self.project_root, "output", filename)
+        os.makedirs(output_dir, exist_ok=True)
+        filepath = os.path.join(output_dir, f"{filename}.txt")
         
         with open(filepath, "w", encoding="utf-8") as f:
             f.write(f"Fecha: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
@@ -211,7 +218,7 @@ class RealtimeTranscriber:
                 f.write("\n")
         
         # Guardar también en JSON para análisis posterior
-        json_filepath = f"output/{filename}/{filename}.json"
+        json_filepath = os.path.join(output_dir, f"{filename}.json")
         data = {
             "timestamp": datetime.now().isoformat(),
             "model": self.model_size,
