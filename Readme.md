@@ -49,7 +49,8 @@ pip3 install torch torchvision torchaudio --index-url https://download.pytorch.o
 pip install openai-whisper
 
 # Dependencias de audio
-conda install -c conda-forge pyaudio sounddevice scipy
+pip install sounddevice 
+conda install -c conda-forge pyaudio scipy -y
 
 # Procesamiento de datos
 conda install numpy pandas
