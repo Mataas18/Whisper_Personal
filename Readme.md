@@ -13,6 +13,63 @@ Este proyecto permite transcribir audio en tiempo real directamente desde el mic
 - **🗂️ Gestión de archivos**: Guarda transcripciones en texto y JSON con metadatos
 - **🎮 Interfaz intuitiva**: Menús interactivos con navegación por teclado
 
+## 🔄 Versiones del Transcriptor
+
+El proyecto incluye **dos scripts principales** con diferentes niveles de funcionalidad:
+
+### 📌 transcribe_realtime_v2.py (⭐ RECOMENDADO)
+
+**🆕 Versión mejorada con diagnósticos avanzados y mayor robustez**
+
+**Nuevas características:**
+- ✅ **Validación exhaustiva de archivos de audio** antes y después de la grabación
+- 🔍 **Diagnóstico detallado de errores** con sugerencias de solución específicas
+- 🛠️ **Verificación automática del sistema** (FFmpeg, librerías, permisos)
+- 🔄 **Recuperación automática de errores** con archivos temporales
+- 📊 **Información detallada de cada paso** del proceso de transcripción
+- 🎯 **Transcripción más robusta** con configuración optimizada para compatibilidad
+- 💡 **Guías de solución de problemas** integradas en tiempo real
+
+**Ideal para:**
+- ✨ Usuarios que necesitan máxima confiabilidad
+- 🐛 Diagnóstico y solución de problemas
+- 🔧 Entornos con configuraciones complejas
+- 📈 Producción y uso profesional
+
+### 📌 transcribe_realtime.py (Versión estándar)
+
+**Versión base con funcionalidades core estables**
+
+**Características:**
+- 🎤 Transcripción en tiempo real básica
+- 📝 Guardado de transcripciones en TXT y JSON
+- 🔍 Detección básica de palabras clave
+- ⚙️ Configuración de modelos y calidad de audio
+- 🎮 Interfaz de menús interactiva
+
+**Ideal para:**
+- 🚀 Uso rápido y directo
+- 💻 Sistemas con configuración estándar
+- 📚 Aprendizaje del funcionamiento básico
+- ⚡ Máximo rendimiento sin diagnósticos
+
+### 🎯 ¿Cuál elegir?
+
+| Aspecto | v1 (estándar) | v2 (recomendado) |
+|---------|---------------|------------------|
+| **Facilidad de uso** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
+| **Robustez** | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
+| **Diagnóstico de errores** | ⭐⭐ | ⭐⭐⭐⭐⭐ |
+| **Velocidad de inicio** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
+| **Resolución de problemas** | ⭐⭐ | ⭐⭐⭐⭐⭐ |
+| **Información detallada** | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
+
+**💡 Recomendación:** Usa **v2** para mayor confiabilidad, especialmente si:
+- Es tu primera vez usando el transcriptor
+- Has tenido problemas con configuración de audio/video
+- Necesitas información detallada de lo que está ocurriendo
+- Trabajas en un entorno de producción
+
 ## 🔧 Requisitos del Sistema
 
 ### Hardware Recomendado
@@ -80,9 +137,10 @@ whisper-project/
 │   ├── transcripcion_YYYYMMDD_HHMMSS.txt
 │   └── transcripcion_YYYYMMDD_HHMMSS.json
 ├── scripts/                    # 🐍 Scripts del proyecto
-│   ├── transcribe_realtime.py  # Script principal
-│   ├── show_models.py          # Información de modelos
-│   └── simple_record.py        # Grabador alternativo
+│   ├── transcribe_realtime_v2.py  # ⭐ Script principal RECOMENDADO
+│   ├── transcribe_realtime.py     # Script estándar (v1)
+│   ├── show_models.py             # Información de modelos
+│   └── simple_record.py           # Grabador alternativo
 ├── notebooks/                  # 📓 Jupyter notebooks (opcional)
 ├── models/                     # 🤖 Modelos descargados automáticamente
 ├── test_setup.py              # ✅ Script de verificación
@@ -106,12 +164,30 @@ whisper-project/
 # Activar entorno
 conda activate whisper-env
 
-# Ejecutar transcriptor
+# ⭐ RECOMENDADO: Ejecutar versión v2 (con diagnósticos)
+python scripts/transcribe_realtime_v2.py
+
+# Versión estándar (más rápida pero menos robusta)
 python scripts/transcribe_realtime.py
 
-# Con parámetros específicos
-python scripts/transcribe_realtime.py base es
-python scripts/transcribe_realtime.py medium en
+# Con parámetros específicos en cualquier versión
+python scripts/transcribe_realtime_v2.py base es
+python scripts/transcribe_realtime_v2.py medium en
+python scripts/transcribe_realtime.py small es
+```
+
+### 🔧 Primera ejecución recomendada
+
+Si es tu primera vez, ejecuta **v2** para verificar que todo funciona correctamente:
+
+```bash
+# La v2 verificará automáticamente:
+python scripts/transcribe_realtime_v2.py
+
+# ✅ FFmpeg instalado y funcionando
+# ✅ Librerías de audio disponibles  
+# ✅ Permisos de escritura
+# ✅ Compatibilidad del sistema
 ```
 
 ### Menú Principal
@@ -217,7 +293,15 @@ ANÁLISIS DE CONFIANZA:
 
 ## 🔧 Solución de Problemas
 
-### GPU no se detecta
+### 🆘 Problemas generales
+
+**Paso 1: Usa la versión v2 para diagnóstico automático**
+```bash
+python scripts/transcribe_realtime_v2.py
+```
+La v2 detectará automáticamente la mayoría de problemas y te dará sugerencias específicas.
+
+### 🎮 GPU no se detecta
 ```bash
 # Verificar CUDA
 python -c "import torch; print(torch.cuda.is_available())"
@@ -227,7 +311,10 @@ conda uninstall pytorch torchvision torchaudio
 conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
 ```
 
-### Problemas de audio
+### 🎵 Problemas de audio
+
+La **v2 detecta automáticamente** problemas de audio, pero si necesitas verificar manualmente:
+
 ```bash
 # Verificar dispositivos de audio
 python -c "import sounddevice as sd; print(sd.query_devices())"
@@ -237,9 +324,29 @@ conda uninstall pyaudio
 conda install -c conda-forge pyaudio
 ```
 
-### Errores de permisos de micrófono
+### 🔧 FFmpeg no encontrado
+
+La **v2 verifica FFmpeg automáticamente** al inicio. Si necesitas instalarlo:
+
+**Windows:**
+```bash
+# Descargar desde https://ffmpeg.org/download.html
+# O usar chocolatey
+choco install ffmpeg
+```
+
+**Linux/macOS:**
+```bash
+# Ubuntu/Debian
+sudo apt install ffmpeg
+
+# macOS con Homebrew
+brew install ffmpeg
+```
+
+### 🔐 Errores de permisos de micrófono
 - **Windows**: Configuración → Privacidad → Micrófono
-- **macOS**: Preferencias del Sistema → Seguridad → Micrófono
+- **macOS**: Preferencias del Sistema → Seguridad → Micrófono  
 - **Linux**: Verificar grupo `audio`
 
 ## 🎓 Scripts Adicionales
@@ -263,3 +370,4 @@ python scripts/simple_record.py     # Modo interactivo
 3. **Micrófono cerca**: 15-30 cm de distancia óptima
 4. **Ambiente silencioso**: Reduce ruido de fondo para mejor precisión
 5. **Hablar claramente**: Pausas naturales mejoran la segmentación
+6. **🆕 Usar v2 para producción**: Mayor robustez y diagnóstico automático
